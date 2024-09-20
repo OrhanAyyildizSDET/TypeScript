@@ -2,7 +2,7 @@ import { Locator } from '@playwright/test';
 import { Page } from '@playwright/test';
 
 export class N11Page {
-  constructor(public page: Page) {}
+  constructor(private page: Page) {}
 
   get rejectButton(): Locator {
     return this.page.locator('efilli-layout-dynamic [data-name="Reject Button"]');
@@ -26,6 +26,10 @@ export class N11Page {
 
   get cartLink(): Locator {
     return this.page.locator('.myBasketHolder.active div').locator('a[href="//www.n11.com/sepetim"]');
+  }
+
+  get termOkButton(): Locator {
+    return this.page.locator('body #userKvkkModal span[class="btn btnBlack"]');
   }
 
   get loginButton(): Locator {
@@ -64,7 +68,8 @@ export class N11Page {
   }
 
   async addToCart() {
-    await this.addToCartButton.click();
+    await this.addToCartButton.scrollIntoViewIfNeeded();
+    await this.addToCartButton.click({ force: true });
   }
 
   async goToCart() {
@@ -79,10 +84,5 @@ export class N11Page {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.loginSubmitButton.click();
-  }
-
-  async pageElementHasItem(productName, locator) {
-    const cartItems = await this.page.locator(locator).allTextContents();
-    return cartItems.some(text => text.includes(productName));
   }
 }
